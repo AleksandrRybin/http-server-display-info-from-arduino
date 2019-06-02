@@ -14,4 +14,5 @@ app.use(express.static(path.join(__dirname, 'static')));
 
 app.use('/', router);
 
-app.listen(5000 || process.env.PORT, '0.0.0.0');
+const PORT = process.env.PORT || 5000;
+app.listen(PORT);
