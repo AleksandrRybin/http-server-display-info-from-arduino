@@ -7,18 +7,25 @@ var data = {
     'total' : 0
 };
 
-if (fs.existsSync('data.json')) {
-    data = JSON.parse(fs.readFileSync('data.json'));
-}
-
 router.post('/update', (req, res) => {
-    data['touches'] = req.body.touches;
-    data['vibrs'] = req.body.vibrs;
-    data['total'] = req.body.total;
+    if (req.body.touches != null &&
+        req.body.vibrs != null &&
+        req.body.total != null) {
+            data['touches'] = req.body.touches;
+            data['vibrs'] = req.body.vibrs;
+            data['total'] = req.body.total;
 
-    fs.writeFile('data.json', JSON.stringify(data), err => {
-        console.log(`error write file : ${err}`);
-    });
+            res.json({
+                'status' : 'okay',
+                'time' : new Date(),
+            });
+    }
+    else {
+        res.json({
+            'status' : 'failed',
+            'error' : 'some variables are undefined'
+        });
+    }
 });
 
 router.get('/', (req, res) => {
