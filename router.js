@@ -2,28 +2,32 @@ const router = require('express').Router();
 const fs = require('fs');
 
 var data = {
-    'touches' : 0,
-    'vibrs' : 0,
-    'total' : 0
+    touches : 0,
+    vibrs : 0,
+    total : 0,
+    first_connected : false
 };
 
 router.post('/update', (req, res) => {
-    if (req.body.touches != null &&
-        req.body.vibrs != null &&
-        req.body.total != null) {
-            data['touches'] = req.body.touches;
-            data['vibrs'] = req.body.vibrs;
-            data['total'] = req.body.total;
+    if (req.body.touches !== undefined &&
+        req.body.vibrs !== undefined &&
+        req.body.total !== undefined &&
+        req.body.first_connected !== undefined) {
+            
+            data.touches = req.body.touches;
+            data.vibrs = req.body.vibrs;
+            data.total = req.body.total;
+            data.first_connected = req.body.first_connected;
 
             res.json({
-                'status' : 'okay',
-                'time' : new Date(),
+                status : 'okay',
+                time : new Date(),
             });
     }
     else {
         res.json({
-            'status' : 'failed',
-            'error' : 'some variables are undefined'
+            status : 'failed',
+            error : 'some variables are undefined'
         });
     }
 });
