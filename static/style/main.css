@@ -6,6 +6,18 @@
     font-family: "Comic Sans MS", cursive, sans-serif;
   }
 
+.w3-tangerine {
+    font-family: "Tangerine", serif;
+}
+
+.w3-lato {
+    font-family: "Lato";
+}
+
+.w3-poppins {
+    font-family: "Poppins";
+}
+
 .shadow-text {
     text-shadow: 0.2px 0.2px 0.35px;
 }
