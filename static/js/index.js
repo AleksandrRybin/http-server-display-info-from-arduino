@@ -1,6 +1,6 @@
 $( document ).ready(() => {
-    $('#arduino-connected_display-close-btn').click(() => {
-        $('#arduino-connected_display').css('display', 'none');
+    $('#arduino-connected-display-close-btn').click(() => {
+        $('#arduino-connected-display').css('display', 'none');
     })
     
     var check_interval = setInterval(() => {
@@ -10,7 +10,7 @@ $( document ).ready(() => {
             $('#p-total').text(data.total);
     
             if (data.first_connected) {
-                $('#arduino-connected_display').css('display', 'block');
+                $('#arduino-connected-display').css('display', 'block');
             }
         });
     }, 100);
