@@ -1,7 +1,7 @@
 {
   "name": "http-server-display-info-from-arduino",
   "version": "1.0.0",
-  "description": "Обработка данных с arduino с помощью http запросов",
+  "description": "Индикация данных с arduino через web интерфейс",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,8 +11,8 @@
     "type": "git",
     "url": "git+https://github.com/AleksandrRybin/http-server-display-info-from-arduino.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "AleksandrRybin",
+  "license": "GNU General Public License v3.0",
   "bugs": {
     "url": "https://github.com/AleksandrRybin/http-server-display-info-from-arduino/issues"
   },
