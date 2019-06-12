@@ -1,46 +1,52 @@
-#define SCLK_PIN 6
-#define RCLK_PIN 5
-#define DIO_PIN 4
+#define SCLK_PIN 6 // 
+#define RCLK_PIN 5 // Для библиотеки вывода на дисплей
+#define DIO_PIN 4 //
 
-#define VIBRATION_PIN 2
-#define TOUCH_PIN 3
-#define SOUND_PIN A2
+#define VIBRATION_PIN 2 // пин датчика вибрации
+#define TOUCH_PIN 3    // пин датчика касания
+#define SOUND_PIN A2   // пин динамика
 
-#define RED_LIGHT_PIN A5
-#define GREEN_LIGHT_PIN A3
-#define BLUE_LIGHT_PIN A4
+#define RED_LIGHT_PIN A5   // пин красного светодиода
+#define GREEN_LIGHT_PIN A3 // пин зелёного светодиода
+#define BLUE_LIGHT_PIN A4  // пин синего светодиода
 
-#define HTTP_POST_SEND_TIME_MS 335
-#define DISP_AWAKE_TIME_MS 3
-#define VIBRATION_CHECK_TIME_MS 40
-#define TOUCH_CHECK_TIME_MS 125
-#define LIGHT_TIME_MS 165
+#define HTTP_POST_SEND_TIME_MS 335  // таймаут отправки http запросов
+#define DISP_AWAKE_TIME_MS 3        // таймаут подачи питания на дисплей
+#define VIBRATION_CHECK_TIME_MS 40  // таймаут проверки датчика вибрации
+#define TOUCH_CHECK_TIME_MS 125     // таймаут проверки датчика касания
+#define LIGHT_TIME_MS 165           // время на которое загорается светодиод после обнаружения события
 
-#define SOUND_TIME_MS LIGHT_TIME_MS
-#define SOUND_TOUCH_FREQ_HZ 800
-#define SOUND_VIBR_FREQ_HZ 2500
+#define SOUND_TIME_MS LIGHT_TIME_MS // время на которое включается звуковой сигнал после обнаружения события
+#define SOUND_TOUCH_FREQ_HZ 800     // частота звукового сигнала после обнаружения касания
+#define SOUND_VIBR_FREQ_HZ 2500     // частота звукового сигнала после обнаружения вибрации
 
 #include <TM74HC595Display.h>
 #include <SPI.h>
 #include <Ethernet.h>
 
+// типы мелодий которые могут играть
 enum MELODY_TYPE {
-  INIT_MELODY,
-  GAIN_10_MELODY,
-  GAIN_100_MELODY
+  INIT_MELODY,     // начальная мелодия при включении
+  GAIN_10_MELODY,  // каждые 10 очков
+  GAIN_100_MELODY  // каждые 100 очков
 };
 
-TM74HC595Display disp(SCLK_PIN, RCLK_PIN, DIO_PIN);
-EthernetClient client;
+TM74HC595Display disp(SCLK_PIN, RCLK_PIN, DIO_PIN);  // дисплей
+EthernetClient client;                               // клиент Ethernet
 
 void setup() {
+
+  // если кабель не отключен
   if (Ethernet.linkStatus() != LinkOFF) {
-    byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-    Ethernet.begin(mac);
+    byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED}; // из урока по Ethernet Arduino
+    Ethernet.begin(mac); // настройка через DHCP
     delay(2000);
+
+    // отправить http post запрос с начальными данными
     http_send_post(0, 0, 0, true);
   }
   
+  // настройка пинов
   pinMode(VIBRATION_PIN, INPUT);
   pinMode(TOUCH_PIN, INPUT);
 
@@ -49,48 +55,56 @@ void setup() {
   pinMode(BLUE_LIGHT_PIN, OUTPUT);
   pinMode(SOUND_PIN, OUTPUT);
 
-  disp.clear();
-  play_melody(INIT_MELODY);
-  digitalWrite(RED_LIGHT_PIN, HIGH);
-  disp.digit4(0);
+  disp.clear();                      // очистить дисплей
+  play_melody(INIT_MELODY);          // играть начальную мелодию
+  digitalWrite(RED_LIGHT_PIN, HIGH); // включить красный светодиод
+  disp.digit4(0);                    // вывести 0 на дисплей
 }
 
 void loop() {
-  static uint16_t num_touches = 0;
-  static uint16_t num_vibrs = 0;
-  static uint16_t num_detected = 0;
+  static uint16_t num_touches = 0;  // количество касаний
+  static uint16_t num_vibrs = 0;    // количество вибраций
+  static uint16_t num_detected = 0; // всего событий
 
-  check_light(false);
-  check_display();
+  check_light(false); // проверить таймер выключения индикации события на светодиоде
+  check_display();    // проверить таймер подачи питания на дисплей              
 
+  // проверить датчик касаний
   boolean touch = check_touch();
   if (touch) {
     num_touches++;
-      
+    
+    // включить только синий светодиод
     digitalWrite(RED_LIGHT_PIN, LOW);
     digitalWrite(GREEN_LIGHT_PIN, LOW);
     digitalWrite(BLUE_LIGHT_PIN, HIGH);
 
+    // подать соотвутствующий звуковой сигнал
     tone(SOUND_PIN, SOUND_TOUCH_FREQ_HZ, SOUND_TIME_MS);
   }
 
+  // проверить датчик вибраций
   boolean vibr = check_vibr();
   if (vibr) {
     num_vibrs++;
-      
+    
+    // включить только зелёный светодиод
     digitalWrite(RED_LIGHT_PIN, LOW);
     digitalWrite(BLUE_LIGHT_PIN, LOW);
     digitalWrite(GREEN_LIGHT_PIN, HIGH);
     
+    // подать соотвутствующий звуковой сигнал
     tone(SOUND_PIN, SOUND_VIBR_FREQ_HZ, SOUND_TIME_MS);
   }
 
+  // если произошло какое-то событие
   if (touch || vibr) {
     num_detected = num_vibrs + num_touches;
-    disp.digit4(num_detected);
-    http_send_post(num_touches, num_vibrs, num_detected, false);
-    check_light(true);
+    disp.digit4(num_detected); // отобразить текущее кол-во событий на дисплей
+    http_send_post(num_touches, num_vibrs, num_detected, false); // отправить данные на сервер
+    check_light(true); // сбросить счётчик индикации на светодиоде после события
     
+    // если число кратно 10 или 100 проиграть мелодию
     if (num_detected % 10 == 0 && num_detected != 0 && num_detected % 100 != 0) {
       play_melody(GAIN_10_MELODY);
     }
@@ -115,7 +129,6 @@ void http_send_post(uint16_t num_touches, uint16_t num_vibrs, uint16_t num_detec
         client.print("Content-Length: ");
         content_length += count_digits_uint(num_touches) + count_digits_uint(num_vibrs) + count_digits_uint(num_detected);
         content_length += first_connected ? strlen("true") : strlen("false");
-        
         client.println(content_length);
         client.println();
       
@@ -192,6 +205,7 @@ boolean check_touch() {
 void check_light(boolean reinstall_timer) {
   static uint64_t light_timer = 0;
 
+  // если требуется сбросить таймер
   if (reinstall_timer) {
     light_timer = millis();
   }
@@ -243,6 +257,8 @@ void play_one_melody(const uint16_t melody[], const uint8_t note_durations[], co
   } 
 }
 
+// посчитать кол-во цифр в числе
+// необходимо для подсчёта Content-Length в запросе
 uint8_t count_digits_uint(uint16_t val) {
   uint8_t digits = 1;
   
