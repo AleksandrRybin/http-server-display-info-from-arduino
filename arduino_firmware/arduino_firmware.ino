@@ -12,9 +12,9 @@
 
 #define HTTP_POST_SEND_TIME_MS 335
 #define DISP_AWAKE_TIME_MS 3
-#define VIBRATION_CHECK_TIME_MS 50
+#define VIBRATION_CHECK_TIME_MS 40
 #define TOUCH_CHECK_TIME_MS 125
-#define LIGHT_TIME_MS 160
+#define LIGHT_TIME_MS 165
 
 #define SOUND_TIME_MS LIGHT_TIME_MS
 #define SOUND_TOUCH_FREQ_HZ 800
@@ -34,11 +34,12 @@ TM74HC595Display disp(SCLK_PIN, RCLK_PIN, DIO_PIN);
 EthernetClient client;
 
 void setup() {
-  byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-  Ethernet.begin(mac);
-  delay(2000);
-  
-  http_send_post(0, 0, 0, true);
+  if (Ethernet.linkStatus() != LinkOFF) {
+    byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
+    Ethernet.begin(mac);
+    delay(2000);
+    http_send_post(0, 0, 0, true);
+  }
   
   pinMode(VIBRATION_PIN, INPUT);
   pinMode(TOUCH_PIN, INPUT);
@@ -103,7 +104,7 @@ void http_send_post(uint16_t num_touches, uint16_t num_vibrs, uint16_t num_detec
   static uint64_t http_send_timer = 0;
 
   if (millis() - http_send_timer >= HTTP_POST_SEND_TIME_MS) {
-    if (Ethernet.hardwareStatus() != EthernetNoHardware && Ethernet.linkStatus() != LinkOFF) {
+    if (Ethernet.linkStatus() != LinkOFF) {
       if (client.connect("afternoon-ravine-88100.herokuapp.com", 80)) {
         uint16_t content_length = strlen("touches=&vibrs=&total=&first_connected=");
       
