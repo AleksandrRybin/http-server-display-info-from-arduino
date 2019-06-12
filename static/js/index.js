@@ -22,8 +22,5 @@ $( document ).ready(() => {
         $('#p-touches').text(data.touches);
         $('#p-vibrs').text(data.vibrs);
         $('#p-total').text(data.total);
-
-        //debug only
-        $.notify(data.first_connected);
     });
 })

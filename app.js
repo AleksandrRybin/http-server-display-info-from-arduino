@@ -34,14 +34,11 @@ app.post('/update', (req, res) => {
         req.body.total !== undefined &&
         req.body.first_connected !== undefined) {
             
-            data.touches = req.body.touches;
-            data.vibrs = req.body.vibrs;
-            data.total = req.body.total;
+            data.touches = JSON.parse(req.body.touches);
+            data.vibrs = JSON.parse(req.body.vibrs);
+            data.total = JSON.parse(req.body.total);
 
-            //debug only
-            data.first_connected = req.body.first_connected;
-
-            if (data.first_connected) {
+            if (JSON.parse(req.body.first_connected)) {
                 io.emit('first_connected', data);
             }
             else {
