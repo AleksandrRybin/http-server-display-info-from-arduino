@@ -1,4 +1,5 @@
 const express = require('express');
+const http = require('http');
 const socketIO = require('socket.io');
 const path = require('path');
 
@@ -9,7 +10,8 @@ var data = {
 };
 
 var app = express();
-var io = socketIO(app);
+var server = http.Server(app);
+var io = socketIO(server);
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
