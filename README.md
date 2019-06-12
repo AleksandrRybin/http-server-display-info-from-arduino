@@ -21,3 +21,5 @@
 - Модуль **Ethernet W5500 SPI** для работы с сетью.
 
 Для отображения информации на дисплее используется [библиотека](https://alexgyver.ru/tm74hc595_display/) автора [AlexGyver](https://github.com/AlexGyver).
+
+Для демонстрации уведомлений на сайте исползуется библиотека [Notify.js](https://notifyjs.jpillora.com/)
