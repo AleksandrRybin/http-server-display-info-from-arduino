@@ -10,11 +10,11 @@
 #define GREEN_LIGHT_PIN A3
 #define BLUE_LIGHT_PIN A4
 
-#define HTTP_POST_SEND_TIME_MS 500
+#define HTTP_POST_SEND_TIME_MS 335
 #define DISP_AWAKE_TIME_MS 3
 #define VIBRATION_CHECK_TIME_MS 50
 #define TOUCH_CHECK_TIME_MS 125
-#define LIGHT_TIME_MS 150
+#define LIGHT_TIME_MS 160
 
 #define SOUND_TIME_MS LIGHT_TIME_MS
 #define SOUND_TOUCH_FREQ_HZ 800
@@ -37,7 +37,7 @@ void setup() {
   byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
   Ethernet.begin(mac);
   delay(2000);
-
+  
   http_send_post(0, 0, 0, true);
   
   pinMode(VIBRATION_PIN, INPUT);
