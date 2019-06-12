@@ -10,6 +10,8 @@ var data = {
 };
 
 var app = express();
+var server = http.createServer(app);
+var io = socketIO(server);
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -56,6 +58,4 @@ app.post('/update', (req, res) => {
     }
 });
 
-app.listen(process.env.PORT || 5000);
-var server = http.Server(app);
-var io = socketIO(server);
+server.listen(process.env.PORT || 5000);
