@@ -1,4 +1,4 @@
-$( document ).ready(() => {    
+$( document ).ready(() => {
     var socket = io();
 
     socket.on('update', (new_data) => {
@@ -9,7 +9,7 @@ $( document ).ready(() => {
 
     socket.on('first_connection', (data) => {
         $.notify("Arduino connected!", {
-            globalPosition : 'center',
+            position : 'top center',
             class : 'success',
         });
 
