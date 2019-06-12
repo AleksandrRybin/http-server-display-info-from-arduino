@@ -3,9 +3,8 @@ $( document ).ready(() => {
 
     socket.on('update', (new_data) => {
         $.notify("New data arrived!", {
-            position : 'top center',
             className : 'info',
-            autoHideDelay: 2000,
+            autoHideDelay: 3000,
         });
 
         $('#p-touches').text(new_data.touches);
@@ -15,7 +14,6 @@ $( document ).ready(() => {
 
     socket.on('first_connected', (data) => {
         $.notify("Arduino connected!", {
-            position : 'top center',
             className : 'success',
         });
 
