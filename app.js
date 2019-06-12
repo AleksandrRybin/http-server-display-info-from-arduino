@@ -38,8 +38,10 @@ app.post('/update', (req, res) => {
             data.vibrs = req.body.vibrs;
             data.total = req.body.total;
 
-            if (req.body.first_connected) {
-                io.emit('first_connection', data);
+            let first_connected = req.body.first_connected;
+
+            if (first_connected) {
+                io.emit('first_connected', data);
             }
             else {
                 io.emit('update', data);
