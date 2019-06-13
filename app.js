@@ -34,9 +34,9 @@ app.post('/update', (req, res) => {
     let total = JSON.parse(req.body.total);
     let first_connected = JSON.parse(req.body.first_connected);
 
-    if (typeof(touches) == 'number' &&
-        typeof(vibrs) == 'number' &&
-        typeof(total) == 'number' &&
+    if (Number.isInteger(touches)         &&
+        Number.isInteger(vibrs)           &&
+        Number.isInteger(total)           &&
         typeof(first_connected) == 'boolean') {
             
             if (first_connected) {
