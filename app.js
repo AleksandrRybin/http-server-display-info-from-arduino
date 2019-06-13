@@ -38,6 +38,10 @@ app.post('/update', (req, res) => {
         Number.isInteger(vibrs)           &&
         Number.isInteger(total)           &&
         typeof(first_connected) == 'boolean') {
+
+            data.touches = touches;
+            data.vibrs = vibrs;
+            data.total = total;
             
             if (first_connected) {
                 io.emit('first_connected', data);
