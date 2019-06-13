@@ -6,7 +6,7 @@
 
 На главной странице сайта переодически происходит обновление данных с помощью технологии *WEB Sockets*.
 
-Проект доступен на [*Heroku*](https://afternoon-ravine-88100.herokuapp.com/)
+Проект доступен на [**Heroku**](https://afternoon-ravine-88100.herokuapp.com/)
 
 ## Используемые датчики и модули
 
