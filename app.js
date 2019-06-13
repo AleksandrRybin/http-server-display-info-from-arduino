@@ -29,16 +29,17 @@ app.get('/info', (req, res) => {
 });
 
 app.post('/update', (req, res) => {
-    if (req.body.touches !== undefined &&
-        req.body.vibrs !== undefined &&
-        req.body.total !== undefined &&
-        req.body.first_connected !== undefined) {
-            
-            data.touches = JSON.parse(req.body.touches);
-            data.vibrs = JSON.parse(req.body.vibrs);
-            data.total = JSON.parse(req.body.total);
+    let touches = JSON.parse(req.body.touches);
+    let vibrs = JSON.parse(req.body.vibrs);
+    let total = JSON.parse(req.body.total);
+    let first_connected = JSON.parse(req.body.first_connected);
 
-            if (JSON.parse(req.body.first_connected)) {
+    if (typeof(touches) == 'number' &&
+        typeof(vibrs) == 'number' &&
+        typeof(total) == 'number' &&
+        typeof(first_connected) == 'boolean') {
+            
+            if (first_connected) {
                 io.emit('first_connected', data);
             }
             else {
@@ -53,7 +54,7 @@ app.post('/update', (req, res) => {
     else {
         res.json({
             status : 'failed',
-            error : 'some variables are undefined'
+            error : 'some variables are undefined or incorrect'
         });
     }
 });
