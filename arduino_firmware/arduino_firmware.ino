@@ -26,6 +26,7 @@
 #include <TM74HC595Display.h>
 
 #include "play_melody.h"
+#include "utils.h"
 
 TM74HC595Display disp(SCLK_PIN, RCLK_PIN, DIO_PIN);  // дисплей
 EthernetClient client;                               // клиент Ethernet
@@ -222,16 +223,4 @@ void check_display() {
     disp.timerIsr();       
     disp_isr_timer = millis();
   }
-}
-
-// посчитать кол-во цифр в числе
-// необходимо для подсчёта Content-Length в запросе
-uint8_t count_digits_uint(uint16_t val) {
-  uint8_t digits = 1;
-  
-  while ((val /= 10) > 0) {
-    digits++;
-  }
-
-  return digits;
 }
