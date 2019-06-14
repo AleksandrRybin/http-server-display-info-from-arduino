@@ -34,33 +34,33 @@ app.post('/update', (req, res) => {
     let total = req.body.total;
     let first_connected = req.body.first_connected;
 
-    // if (Number.isInteger(touches)         &&
-    //     Number.isInteger(vibrs)           &&
-    //     Number.isInteger(total)           &&
-    //     typeof(first_connected) == 'boolean') {
+    if (Number.isInteger(touches)         &&
+        Number.isInteger(vibrs)           &&
+        Number.isInteger(total)           &&
+        typeof(first_connected) == 'boolean') {
 
-    //         data.touches = touches;
-    //         data.vibrs = vibrs;
-    //         data.total = total;
+            data.touches = touches;
+            data.vibrs = vibrs;
+            data.total = total;
             
-    //         if (first_connected) {
+            if (first_connected) {
                 io.emit('first_connected', data);
-    //         }
-    //         else {
-    //             io.emit('update', data);
-    //         }
+            }
+            else {
+                io.emit('update', data);
+            }
 
-    //         res.json({
-    //             status : 'okay',
-    //             time : new Date(),
-    //         });
-    // }
-    // else {
-    //     res.json({
-    //         status : 'failed',
-    //         error : 'some variables are undefined or incorrect'
-    //     });
-    // }
+            res.json({
+                status : 'okay',
+                time : new Date(),
+            });
+    }
+    else {
+        res.json({
+            status : 'failed',
+            error : 'some variables are undefined or incorrect'
+        });
+    }
 });
 
 server.listen(process.env.PORT || 5000);
