@@ -29,10 +29,10 @@ app.get('/info', (req, res) => {
 });
 
 app.post('/update', (req, res) => {
-    let touches = JSON.parse(req.body.touches);
-    let vibrs = JSON.parse(req.body.vibrs);
-    let total = JSON.parse(req.body.total);
-    let first_connected = JSON.parse(req.body.first_connected);
+    let touches = req.body.touches;
+    let vibrs = req.body.vibrs;
+    let total = req.body.total;
+    let first_connected = req.body.first_connected;
 
     if (Number.isInteger(touches)         &&
         Number.isInteger(vibrs)           &&
