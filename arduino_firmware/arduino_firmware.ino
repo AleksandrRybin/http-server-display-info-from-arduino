@@ -17,7 +17,7 @@
 #define LIGHT_TIME_MS 165           // время на которое загорается светодиод после обнаружения события
 
 #define SOUND_TIME_MS LIGHT_TIME_MS // время на которое включается звуковой сигнал после обнаружения события
-#define SOUND_TOUCH_FREQ_HZ 800     // частота звукового сигнала после обнаружения касания
+#define SOUND_TOUCH_FREQ_HZ 1200     // частота звукового сигнала после обнаружения касания
 #define SOUND_VIBR_FREQ_HZ 2500     // частота звукового сигнала после обнаружения вибрации
 
 #include <SPI.h>
@@ -32,7 +32,6 @@ TM74HC595Display disp(SCLK_PIN, RCLK_PIN, DIO_PIN);  // дисплей
 EthernetClient client;                               // клиент Ethernet
 
 void setup() {
-
   // если кабель не отключен
   if (Ethernet.linkStatus() != LinkOFF) {
     byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED}; // из урока по Ethernet Arduino
@@ -117,33 +116,51 @@ void http_send_post(uint16_t num_touches, uint16_t num_vibrs, uint16_t num_detec
   if (millis() - http_send_timer >= HTTP_POST_SEND_TIME_MS) {
     if (Ethernet.linkStatus() != LinkOFF) {
       if (client.connect("afternoon-ravine-88100.herokuapp.com", 80)) {
-        uint16_t content_length = strlen("touches=&vibrs=&total=&first_connected=");
+        uint16_t content_length = 0;
+        content_length += strlen("{}");
+        content_length += strlen("\"touches\":,");
+        content_length += strlen("\"vibrs\":,");
+        content_length += strlen("\"total\":,");
+        content_length += strlen("\"first_connected\":");
       
         client.println("POST /update HTTP/1.1");
         client.println("Host: afternoon-ravine-88100.herokuapp.com");
-        client.println("Content-Type: application/x-www-form-urlencoded");
+        client.println("Content-Type: application/json");
         
         client.print("Content-Length: ");
-        content_length += count_digits_uint(num_touches) + count_digits_uint(num_vibrs) + count_digits_uint(num_detected);
+        
+        content_length += count_digits_uint(num_touches);
+        content_length += count_digits_uint(num_vibrs);
+        content_length += count_digits_uint(num_detected);
         content_length += first_connected ? strlen("true") : strlen("false");
-        client.println(content_length);
+
+        client.println(content_length + 2);
         client.println();
       
-        client.print("touches=");
-        client.print(num_touches);
-        client.print("&vibrs=");
-        client.print(num_vibrs);
-        client.print("&total=");
-        client.print(num_detected);
+        client.print("{");
         
-        client.print("&first_connected=");
+        client.print("\"touches\":");
+        client.print(num_touches);
+        client.print(",");
+
+        client.print("\"vibrs\":");
+        client.print(num_vibrs);
+        client.print(",");
+
+        client.print("\"total\":");
+        client.print(num_detected);
+        client.print(",");
+        
+        client.print("\"first_connected\":");
         if (first_connected) {
-          client.println("true");
+          client.print("true");
         }
         else {
-          client.println("false");
+          client.print("false");
         }
-      
+        
+        client.println("}");
+
         client.println("Connection: close");
         client.println();
       }
