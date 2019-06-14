@@ -20,16 +20,12 @@
 #define SOUND_TOUCH_FREQ_HZ 800     // частота звукового сигнала после обнаружения касания
 #define SOUND_VIBR_FREQ_HZ 2500     // частота звукового сигнала после обнаружения вибрации
 
-#include <TM74HC595Display.h>
 #include <SPI.h>
 #include <Ethernet.h>
 
-// типы мелодий которые могут играть
-enum MELODY_TYPE {
-  INIT_MELODY,     // начальная мелодия при включении
-  GAIN_10_MELODY,  // каждые 10 очков
-  GAIN_100_MELODY  // каждые 100 очков
-};
+#include <TM74HC595Display.h>
+
+#include "play_melody.h"
 
 TM74HC595Display disp(SCLK_PIN, RCLK_PIN, DIO_PIN);  // дисплей
 EthernetClient client;                               // клиент Ethernet
@@ -55,10 +51,10 @@ void setup() {
   pinMode(BLUE_LIGHT_PIN, OUTPUT);
   pinMode(SOUND_PIN, OUTPUT);
 
-  disp.clear();                      // очистить дисплей
-  play_melody(INIT_MELODY);          // играть начальную мелодию
-  digitalWrite(RED_LIGHT_PIN, HIGH); // включить красный светодиод
-  disp.digit4(0);                    // вывести 0 на дисплей
+  disp.clear();                           // очистить дисплей
+  play_melody(INIT_MELODY, SOUND_PIN);   // играть начальную мелодию
+  digitalWrite(RED_LIGHT_PIN, HIGH);    // включить красный светодиод
+  disp.digit4(0);                      // вывести 0 на дисплей
 }
 
 void loop() {
@@ -106,10 +102,10 @@ void loop() {
     
     // если число кратно 10 или 100 проиграть мелодию
     if (num_detected % 10 == 0 && num_detected != 0 && num_detected % 100 != 0) {
-      play_melody(GAIN_10_MELODY);
+      play_melody(GAIN_10_MELODY, SOUND_PIN);
     }
     else if (num_detected % 100 == 0 && num_detected != 0) {
-      play_melody(GAIN_100_MELODY);
+      play_melody(GAIN_100_MELODY, SOUND_PIN);
     }
   }
 }
@@ -226,35 +222,6 @@ void check_display() {
     disp.timerIsr();       
     disp_isr_timer = millis();
   }
-}
-
-void play_melody(MELODY_TYPE melody_type) {
-  #include "melody.h"
-      
-  switch(melody_type) {
-    case INIT_MELODY:
-      play_one_melody(init_melody, init_note_durations, init_melody_duration);
-      break;
-      
-    case GAIN_10_MELODY:
-      play_one_melody(gain_10_melody, gain_10_note_durations, gain_10_melody_duration);
-      break;
-
-    case GAIN_100_MELODY:
-      play_one_melody(gain_100_melody, gain_100_note_durations, gain_100_melody_duration);
-      break;
-  }
-}
-
-void play_one_melody(const uint16_t melody[], const uint8_t note_durations[], const uint8_t num_notes) {
-  for (uint8_t current_note = 0; current_note < num_notes; current_note++) {
-    uint16_t note_duration = 1000 / note_durations[current_note];
-    uint16_t pause_between_notes = note_duration * 1.20;
-      
-    tone(SOUND_PIN, melody[current_note], note_duration);
-    delay(pause_between_notes);
-    noTone(SOUND_PIN);
-  } 
 }
 
 // посчитать кол-во цифр в числе
