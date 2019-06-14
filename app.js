@@ -58,7 +58,8 @@ app.post('/update', (req, res) => {
     else {
         res.json({
             status : 'failed',
-            error : 'some variables are undefined or incorrect'
+            error : 'some variables are undefined or have incorrect type',
+            time : new Date()
         });
     }
 });
