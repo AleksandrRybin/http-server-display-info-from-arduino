@@ -39,7 +39,7 @@ void setup() {
     delay(2000);
 
     // отправить http post запрос с начальными данными
-    http_send_post(0, 0, 0, true);
+    http_send_post(client, 0, 0, 0, true, HTTP_POST_SEND_TIME_MS);
   }
   
   // настройка пинов
@@ -100,7 +100,8 @@ void loop() {
     http_send_post(num_touches, num_vibrs, num_detected, false); // отправить данные на сервер
     check_light(true); // сбросить счётчик индикации на светодиоде после события
     
-    // если число кратно 10 или 100 проиграть мелодию
+     // отправить данные на сервер
+    http_send_post(client, num_touches, num_vibrs, num_detected, false, HTTP_POST_SEND_TIME_MS);
     if (num_detected % 10 == 0 && num_detected != 0 && num_detected % 100 != 0) {
       play_melody(GAIN_10_MELODY, SOUND_PIN);
     }
