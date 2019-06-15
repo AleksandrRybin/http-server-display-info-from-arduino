@@ -10,13 +10,13 @@
 #define GREEN_LIGHT_PIN A3 // пин зелёного светодиода
 #define BLUE_LIGHT_PIN A4  // пин синего светодиода
 
-#define HTTP_POST_SEND_TIME_MS 335  // таймаут отправки http запросов
+#define HTTP_POST_SEND_TIME_MS 1000  // таймаут отправки http запросов
 #define DISP_AWAKE_TIME_MS 3        // таймаут подачи питания на дисплей
 #define VIBRATION_CHECK_TIME_MS 40  // таймаут проверки датчика вибрации
 #define TOUCH_CHECK_TIME_MS 125     // таймаут проверки датчика касания
 #define LIGHT_TIME_MS 165           // время на которое загорается светодиод после обнаружения события
 
-#define SOUND_TIME_MS LIGHT_TIME_MS // время на которое включается звуковой сигнал после обнаружения события
+#define SOUND_TIME_MS LIGHT_TIME_MS   // время на которое включается звуковой сигнал после обнаружения события
 #define SOUND_TOUCH_FREQ_HZ 1200     // частота звукового сигнала после обнаружения касания
 #define SOUND_VIBR_FREQ_HZ 2500     // частота звукового сигнала после обнаружения вибрации
 
