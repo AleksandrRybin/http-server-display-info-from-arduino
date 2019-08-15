@@ -14,8 +14,7 @@ boolean check_vibr(uint8_t vibr_pin, uint64_t time) {
         
         return true;
       }
-    }
-    else if (is_vibr){
+    } else if (is_vibr){
       is_vibr = false;
     }
     
@@ -37,8 +36,7 @@ boolean check_touch(uint8_t touch_pin, uint64_t time) {
 
         return true;
       }
-    }
-    else if (is_touch){
+    } else if (is_touch){
       is_touch = false;
     }
     

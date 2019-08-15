@@ -56,8 +56,7 @@ void http_send_post(EthernetClient& ethernet_client, uint16_t num_touches, uint1
         ethernet_client.print("\"first_connected\":");
         if (first_connected) {
           ethernet_client.print("true");
-        }
-        else {
+        } else {
           ethernet_client.print("false");
         }
         

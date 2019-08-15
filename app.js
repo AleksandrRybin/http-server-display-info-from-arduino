@@ -29,9 +29,9 @@ app.get('/info', (req, res) => {
 });
 
 app.post('/update', (req, res) => {
-    let touches = req.body.touches;
-    let vibrs = req.body.vibrs;
-    let total = req.body.total;
+    let touches         = req.body.touches;
+    let vibrs           = req.body.vibrs;
+    let total           = req.body.total;
     let first_connected = req.body.first_connected;
 
     if (Number.isInteger(touches)         &&
@@ -45,8 +45,7 @@ app.post('/update', (req, res) => {
             
             if (first_connected) {
                 io.emit('first_connected', data);
-            }
-            else {
+            } else {
                 io.emit('update', data);
             }
 
@@ -54,8 +53,7 @@ app.post('/update', (req, res) => {
                 status : 'okay',
                 time : new Date(),
             });
-    }
-    else {
+    } else {
         res.json({
             status : 'failed',
             error : 'some variables are undefined or have incorrect type',
